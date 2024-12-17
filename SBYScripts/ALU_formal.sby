@@ -1,0 +1,17 @@
+[tasks]
+bmc: mode bmc
+
+[options]
+mode bmc
+depth 5
+
+[engines]
+smtbmc
+
+[files]
+../src/ALU.sv
+../test/tb_ALU.sv
+
+[script]    
+read -formal -sv ALU.sv tb_ALU.sv    # Read all Verilog files
+prep -top tb_ALU                     # Set the top-level module name

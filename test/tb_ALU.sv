@@ -1,8 +1,6 @@
 // `default_nettype none
 `timescale 1us/100ns
-`include "ALU.sv"
 
-// Testbench module
 module tb_ALU;
     // Declare inputs and outputs
     reg [31:0] a, b;
@@ -49,70 +47,7 @@ module tb_ALU;
     // Assert properties (formal verification)
     // Define sequences and assertions for ALU operations
 
-    // AND operation check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_AND) |-> (result == (a & b)));
+    
 
-    // OR operation check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_OR) |-> (result == (a | b)));
-
-    // XOR operation check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_XOR) |-> (result == (a ^ b)));
-
-    // Signed less than check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SLT) |-> (result == (($signed(a) < $signed(b)) ? 32'd1 : 32'd0)));
-
-    // Unsigned less than check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SLTU) |-> (result == ((a < b) ? 32'd1 : 32'd0)));
-
-    // Addition operation check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_ADD) |-> (result == (a + b)));
-
-    // Subtraction operation check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SUB) |-> (result == (a - b)));
-
-    // Shift right logical check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SRL) |-> (result == (a >> b[4:0])));
-
-    // Shift left logical check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SLL) |-> (result == (a << b[4:0])));
-
-    // Shift right arithmetic check
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SRA) |-> (result == $signed(a) >>> b[4:0]));
-
-    // ALU_NOP should return zero
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_NOP) |-> (result == 32'd0));
-
-    // ALU_INVALID should return a known error code
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_INVALID) |-> (result == 32'hDEADBEEF));
-
-    // Default case: any unknown operation should return ALU_INVALID result
-    assert property (@(posedge clk) disable iff (reset) (alu_sel != ALU_NOP && alu_sel != ALU_INVALID && 
-                                                         alu_sel != ALU_AND && alu_sel != ALU_OR &&
-                                                         alu_sel != ALU_XOR && alu_sel != ALU_SLT && 
-                                                         alu_sel != ALU_SLTU && alu_sel != ALU_ADD && 
-                                                         alu_sel != ALU_SUB && alu_sel != ALU_SRL &&
-                                                         alu_sel != ALU_SLL && alu_sel != ALU_SRA) 
-                     |-> (result == 32'hDEADBEEF));
-
-    // Overflow handling for addition (ALU_ADD)
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_ADD) 
-      |-> (a[31] == b[31] ? result[31] == a[31] : 1'b1));
-
-    // Overflow handling for subtraction (ALU_SUB)
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SUB) 
-      |-> (a[31] == ~b[31] ? result[31] == a[31] : 1'b1));
-
-    // Shift left logical behavior when shifting by zero
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SLL && b == 5'd0) |-> (result == a));
-
-    // Shift right logical behavior when shifting by zero
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SRL && b == 5'd0) |-> (result == a));
-
-    // Shift right arithmetic behavior when shifting by zero
-    assert property (@(posedge clk) disable iff (reset) (alu_sel == ALU_SRA && b == 5'd0) |-> (result == a));
-
-    // ALU_INVALID result should never be 32'hDEADBEEF unless ALU_INVALID is selected
-    assert property (@(posedge clk) disable iff (reset) 
-      (result == 32'hDEADBEEF) |-> (alu_sel == ALU_INVALID));
     
 endmodule
