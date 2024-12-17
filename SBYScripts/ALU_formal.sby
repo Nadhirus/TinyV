@@ -10,8 +10,9 @@ smtbmc
 
 [files]
 ../src/ALU.sv
+../src/types.sv
 ../test/tb_ALU.sv
 
 [script]    
-read -formal -sv ALU.sv tb_ALU.sv    # Read all Verilog files
+read -formal -sv ALU.sv types.sv tb_ALU.sv    # Read all Verilog files
 prep -top tb_ALU                     # Set the top-level module name
