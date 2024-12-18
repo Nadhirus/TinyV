@@ -21,7 +21,7 @@ module ALU #(
             `ALU_SUB:     result = a - b;
             `ALU_SRL:     result = a >> b[4:0];
             `ALU_SLL:     result = a << b[4:0];
-            `ALU_SRA:     result = $signed(a) >>> b[4:0];
+            `ALU_SRA:     result = ($signed(a) >>> b[4:0]);
             `ALU_NOP:     result = 32'd0;
             `ALU_INVALID: result = 32'hDEADBEEF;
             default:      result = 32'hDEADBEEF;

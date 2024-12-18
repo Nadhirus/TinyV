@@ -3,7 +3,7 @@ bmc: mode bmc
 
 [options]
 mode bmc
-depth 5
+depth 20
 
 [engines]
 smtbmc
@@ -13,6 +13,6 @@ smtbmc
 ../src/types.sv
 ../test/tb_ALU.sv
 
-[script]    
+[script]  
 read -formal -sv ALU.sv types.sv tb_ALU.sv    # Read all Verilog files
 prep -top tb_ALU                     # Set the top-level module name
