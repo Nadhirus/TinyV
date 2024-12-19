@@ -6,6 +6,10 @@ Le micro-séquenceur est une machine à états finis (FSM) qui contrôle tous le
 
 ### Description des Ports
 
+__Figure 1 : Micro-séquenceur pour un cœur RISC-V 32 bits__
+
+![](./controlUnit.png)
+
 #### input:
 - **codop** : code d'operation pris des bits approprié de l'instruction courant stocké dans *Instrucion Register*
 
@@ -43,7 +47,7 @@ Le micro-séquenceur est une machine à états finis (FSM) qui contrôle tous le
 
 La machine d’état évolue en fonction de l’instruction décodée. Chaque état correspond à une étape clé de l’exécution de l’instruction (fetch, decode, execute, write-back, etc.). Le graphe suivant illustre cette machine d’état :
 
-*__Figure 2 : Micro-séquenceur pour un cœur RISC-V 32 bits__
+__Figure 2 : Micro-séquenceur pour un cœur RISC-V 32 bits__
 
 ![](./controlFSM.png)
 

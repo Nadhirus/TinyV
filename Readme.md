@@ -23,11 +23,35 @@ __Figure 1: RISCV 32bit Core__
 - riscv-formal (fait partie de oss-cad-suite) pour verifier formellement l'adherance a l'ISA.
 
 ## Structure du Répertoire
-```
-/RISCV-Verilog-Processor
-├── src/                # Fichiers sources
-├── test/               # Fichiers de banc de test pour la verification formelle avec SBY
-└── docs/               # Documentation et rapport
+```plaintext
+RISV-VERILOG-PROCESSOR/
+│
+├── src/                # Fichiers source pour les modules Verilog/SystemVerilog
+│   ├── core/           # Modules principaux du processeur
+│   │   ├── top.sv      # Module principal pour le processeur
+│   │   ├── alu.sv      # Unité Arithmétique et Logique (ALU)
+│   │   ├── register_file.sv  # Fichier de registres
+│   │   ├── control.sv  # Unité de contrôle (décodage des instructions) et Micro-séquenceur / Machine à États Finis
+│   │   ├── datapath.sv # Chemin de données reliant ALU, registres, mémoire, etc.
+│   │   ├── pc.sv       # Compteur de programme (PC)
+│   │   └── types.sv    # contient les types commun entre les différents modules pour meilleur lisibilité
+│   │  
+│   └── memory/         # Modules liés à la mémoire
+│       ├── imem.sv     # Mémoire des instructions (ROM simple)
+│       └── dmem.sv     # Mémoire des données
+│
+├── test/               # Fichiers de bancs d’essai (testbench)
+│   ├── alu_tb.sv       # Banc d’essai de l’ALU
+│   ├── control_tb.sv   # Banc d’essai de l’unité de contrôle
+│   └── memory_tb.sv    # Banc d’essai des modules mémoire
+│
+├── SBYScripts/                       # Fichiers de bancs d’essai (testbench)
+│   └── <nom_de_module>_formal.sby    #script pour la verification formelle de chaque module
+│
+├── docs/                     # Documentation
+│   └── <nom_de_module>.md    # details sur implementation et test de chaque module
+│
+└── README.md           # Aperçu du projet et instructions pour l'exploitation
 ```
 ## Licence
 Ce projet est sous licence MIT.
