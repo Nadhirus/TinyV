@@ -18,8 +18,13 @@ module registerFile (
 // Register file array: 32 registers, each 32 bits wide
 reg [31:0] registerArray [31:0];  
 
+// Ensure register 0 is always 0
+initial begin
+    registerArray[0] = 32'b0; 
+end
+
 always @(posedge clk) begin
-    if (readWrite) begin
+    if (readWrite && addr_write != 5'b00000) begin
         registerArray[addr_write] <= write_data;
     end
     rs1_data <= registerArray[addr_rs1];
