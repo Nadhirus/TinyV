@@ -22,3 +22,7 @@
 `define DATA_WIDTH 32
 `define DMEM_ADDR_WIDTH 10
 `define IMEM_ADDR_WIDTH 10
+`define IMEM_ADDR_WIDTH 10
+`define REG_ADDR_WIDTH 4
+
+`define opALU_WIDTH 6
