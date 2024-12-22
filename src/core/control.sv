@@ -1,5 +1,5 @@
 `include "types.sv"
-
+`default_nettype none
 module controlUnit (
   output logic clk,
   input  logic reset, // Reset signal
@@ -10,7 +10,7 @@ module controlUnit (
   output logic memAdrSel,
   output logic memWrCtl,
 
-  output logic aluOp,
+  output logic [`ALU_SEL_SIZE-1:0] aluOp,
   output logic aluASel,
   output logic [1:0] aluBSel,
 
@@ -18,7 +18,7 @@ module controlUnit (
   output logic regDataSel,
   output logic [1:0] regWSel,
 
-  input logic [`opALU_WIDTH -1 : 0] codop  // Create a type definition for this in types.sv
+  input logic [`OPCODE_WIDTH -1 : 0] codop  // Create a type definition for this in types.sv
 );
 
 

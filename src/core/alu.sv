@@ -1,12 +1,11 @@
 `default_nettype none
 `include "types.sv"
-
 module ALU #(
   parameter DATA_WIDTH = `DATA_WIDTH  // Use the DATA_WIDTH from defines
 ) (
   input logic [DATA_WIDTH - 1:0] a,
   input logic [DATA_WIDTH - 1:0] b,
-  input logic [3:0] alu_sel,
+  input logic [`ALU_SEL_SIZE-1:0] alu_sel,
   output logic [DATA_WIDTH - 1:0] result
 );
 

@@ -1,10 +1,11 @@
-`include "alu.sv"
-`include "register_file.sv"
-`include "mux3x1.sv"
+`default_nettype none
 `include "types.sv"
-`include "../memory/dmem.sv"
-`include "../memory/imem.sv"
-`include "../memory/mem.sv"
+// `include "alu.sv"
+// `include "register_file.sv"
+// `include "mux3x1.sv"
+// `include "../memory/dmem.sv"
+// `include "../memory/imem.sv"
+// `include "../memory/mem.sv"
 
 module datapath (
   input logic clk,
@@ -15,7 +16,7 @@ module datapath (
   input logic memAdrSel,
   input logic memWrCtl,
 
-  input logic aluOp,
+  input logic [`ALU_SEL_SIZE-1:0] aluOp,
   input logic aluASel,
   input logic [1:0] aluBSel,
 
@@ -23,7 +24,7 @@ module datapath (
   input logic regDataSel,
   input logic [1:0] regWSel,
 
-  output logic [`opALU_WIDTH -1 : 0] codop  // Create a type definition for this in types.sv
+  output logic [`OPCODE_WIDTH -1 : 0] codop  // Create a type definition for this in types.sv
 );
 
   // Registers for internal datapath operations
@@ -45,6 +46,9 @@ module datapath (
   logic [`MEM_ADDR_WIDTH-1 : 0] memory_address;  // Memory Address Input Wire
   logic [    `DATA_WIDTH-1 : 0] memory_output;  // Memory Output Signal
   logic [    `DATA_WIDTH-1 : 0] registerfile_input;  // Register Input Signal
+  logic [    `REG_ADDR_WIDTH-1 : 0] registerfile_write_address;  // ADDED FIX 
+
+
   logic [    `DATA_WIDTH-1 : 0] alu_operand_a;  // ALU Operand A
   logic [    `DATA_WIDTH-1 : 0] alu_operand_b;  // ALU Operand B
   logic [    `DATA_WIDTH-1 : 0] alu_output;  // ALU Output
@@ -72,7 +76,7 @@ module datapath (
     .write_data_input(b_register),  // Data to be written to memory (from Register B)
     .memory_address(memory_address),   // Memory address input (from PC multiplexer or other control logic)
     .memory_write_enable(memWrCtl),  // Write enable signal for memory operation (control signal)
-    .system_clock(clk),  // System clock driving the memory operations
+    .clk(clk),  // System clock driving the memory operations
     .memory_read_data(memory_output)  // Data read from memory, connected to `memory_output`
   );
 
@@ -92,7 +96,7 @@ module datapath (
   ) registerWriteSelection (
     .A(ir[21:17]),
     .B(ir[26:22]),
-    .C(`REG_ADDR_WIDTH'b11111),
+    .C(`REG_ADDR_WIDTH'b1111),
     .sel(regWSel),
     .result(registerfile_write_address)
   );
@@ -149,5 +153,5 @@ module datapath (
 
 
 
-  assign codop = ir[5:0];
+  assign codop = ir[`OPCODE_WIDTH-1:0];
 endmodule

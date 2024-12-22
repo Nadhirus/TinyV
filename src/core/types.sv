@@ -1,4 +1,5 @@
 // ALU operation types
+`define ALU_SEL_SIZE 4
 `define ALU_AND 4'b0000    // Logical AND
 `define ALU_OR 4'b0001    // Logical OR
 `define ALU_XOR 4'b0010    // Logical XOR
@@ -9,8 +10,8 @@
 `define ALU_SRL 4'b0111    // Logical Shift Right
 `define ALU_SLL 4'b1000    // Logical Shift Left
 `define ALU_SRA 4'b1001    // Arithmetic Shift Right
-`define ALU_CMP 4'b1010    // No Operation
-`define ALU_NOP 4'b1011
+`define ALU_CMP 4'b1010    // compare operation for branching 
+`define ALU_NOP 4'b1011    // No Operation
 `define ALU_INVALID 4'b1111    // Invalid operation
 
 // Control FSM states
@@ -41,8 +42,8 @@
 `define DATA_WIDTH 32
 `define DMEM_ADDR_WIDTH 10
 `define IMEM_ADDR_WIDTH 10
-`define IMEM_ADDR_WIDTH 10
+`define MEM_ADDR_WIDTH 10
 `define REG_ADDR_WIDTH 4
 
 
-`define opALU_WIDTH 6
+`define OPCODE_WIDTH 7
