@@ -2,6 +2,7 @@
 
 # Set paths to your source files and testbench
 SRC_DIR="../src"
+TEST_DIR="../test"
 VCD_FILE="dump.vcd"
 SIMULATION_FILE="simulation.vvp"
 
@@ -10,9 +11,9 @@ echo "Starting simulation..."
 
 # Step 1: Compile Verilog files with Icarus Verilog (iverilog)
 iverilog -g2012 \
-    -I$SRC_DIR/core -I$SRC_DIR/memory \
+    -I$SRC_DIR/core -I$SRC_DIR/memory -I$TEST_DIR \
     -o $SIMULATION_FILE \
-    $SRC_DIR/core/*.sv $SRC_DIR/memory/*.sv  # Removed top.sv explicitly
+    $SRC_DIR/core/*.sv $SRC_DIR/memory/*.sv $TEST_DIR/top_tb.sv
 
 # Check for compilation errors
 if [ $? -ne 0 ]; then
