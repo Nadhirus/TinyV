@@ -14,10 +14,11 @@ module imem #(
 
   logic [DATA_WIDTH-1:0] imem[2**ADDR_WIDTH-1:0];
 
-  // fill the Imemory with bootloader or test code from a hex file
-  initial begin
-    $readmemh(IMEM_FILE, imem, 0, 2 ** ADDR_WIDTH - 1);
-  end
+  // // fill the Imemory with bootloader or test code from a hex file
+  // initial begin
+  //   $readmemh(IMEM_FILE, imem, 0, 2 ** ADDR_WIDTH - 1);
+  // end
+
   always @(posedge clk) begin
     read_data <= imem[address];
   end

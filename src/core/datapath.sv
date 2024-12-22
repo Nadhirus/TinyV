@@ -96,7 +96,7 @@ module datapath (
   ) registerWriteSelection (
     .A(ir[21:17]),
     .B(ir[26:22]),
-    .C(`REG_ADDR_WIDTH'b1111),
+    .C(`REG_ADDR_WIDTH'b11111),
     .sel(regWSel),
     .result(registerfile_write_address)
   );
@@ -141,12 +141,14 @@ module datapath (
     d_register <= d_register_write_wire;
   end
 
+logic [`DATA_WIDTH -1 :0] CPortpcSelection;
+assign CPortpcSelection = {alu_operand_a[31:28], (ir[31:6] << 2)};
   mux3x1 #(
     .DATA_WIDTH(`DATA_WIDTH)
   ) pcSelection (
     .A(d_register_write_wire),
     .B(d_register),
-    .C({alu_operand_a[31:28], ir[31:6] << 2}),
+    .C(CPortpcSelection),
     .sel(pcWrSel),
     .result(pc_write_wire)
   );

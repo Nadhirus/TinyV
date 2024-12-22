@@ -23,14 +23,15 @@ module memory #(
   //   $readmemh(IMEM_FILE, memory_array, 0, 2 ** ADDR_WIDTH - 1);
   // end
 
-  // Instead I'm manually initializing the memory with hardwired values
-  initial begin
-    memory_array[0] = 32'h01900093;  // 0x01900093
-    memory_array[1] = 32'h02C00113;  // 0x02C00113
-    memory_array[2] = 32'h002081B3;  // 0x002081B3
-    memory_array[3] = 32'h00300023;  // 0x00300023
-    memory_array[4] = 32'hFFFFFFF6;  // 0xFFFFFFF6
-  end
+// Instead I'm manually initializing the memory with hardwired values
+initial begin
+    memory_array[0] = 32'h00000093;  // andi x1, x0, 0
+    memory_array[1] = 32'h00000113;  // andi x2, x0, 0
+    memory_array[2] = 32'h000001B3;  // andi x3, x0, 0
+    memory_array[3] = 32'h00500093;  // ori x1, x0, 5
+    memory_array[4] = 32'h00A00113;  // ori x2, x0, 10
+    memory_array[5] = 32'h002081B3;  // add x3, x1, x2
+end
 
 
   always @(posedge clk) begin

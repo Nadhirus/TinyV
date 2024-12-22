@@ -1,7 +1,7 @@
 `include "types.sv"
 `default_nettype none
 module controlUnit (
-  output logic clk,
+  input logic clk,
   input  logic reset, // Reset signal
 
   output logic [1:0] pcWrSel,
