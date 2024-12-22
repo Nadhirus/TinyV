@@ -2,7 +2,7 @@
 `include "types.sv"
 
 module mux3x1 #(
-  parameter DATA_WIDTH = `DATA_WIDTH ;
+  parameter DATA_WIDTH = `DATA_WIDTH
 )(
   input logic [DATA_WIDTH-1 : 0] A,
   input logic [DATA_WIDTH-1 : 0] B,
@@ -16,16 +16,11 @@ module mux3x1 #(
       2'b00: result = A;
       2'b01: result = B;
       2'b10: result = C;
-      default: result = DATA_WIDTH'(0);
+      default: result = '0;
     endcase
   end
 
 endmodule
-
-
-
-
-
 
 
 

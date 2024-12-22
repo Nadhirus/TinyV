@@ -1,3 +1,5 @@
 ALU_formal
 ALU_formal_bmc
 ALU_formal_cover
+dump.vcd
+simulation.vvp
