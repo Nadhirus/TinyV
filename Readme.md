@@ -1,4 +1,4 @@
-# RISC-V Verilog Processor 
+# TinyV 
 
 ## Vue d'ensemble
 Ce projet est une implémentation simple d'un processeur RISC-V utilisant SystemVerilog. Il prend en charge l'ISA RV32I. L'objectif est de créer un cœur synthétisable sur FPGA, optimisé en taille.
