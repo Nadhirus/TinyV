@@ -25,92 +25,76 @@ module datapath (
   input logic regDataSel,
   input logic [1:0] regWSel,
 
-  output logic [`OPCODE_WIDTH -1 : 0] codop  // Create a type definition for this in types.sv
+  output logic [`OPCODE_WIDTH-1:0] codop  // Create a type definition for this in types.sv
 );
 
-  // Registers for internal datapath operations
-  reg [`MEM_ADDR_WIDTH-1:0] pc;  // Explicitly initialize with all zeros
-  reg [`DATA_WIDTH-1 : 0] ir;  // Instruction Register (IR)
-  reg [`DATA_WIDTH-1 : 0] dm;  // Data Register (DM)
+  // Internal registers
+  reg   [`MEM_ADDR_WIDTH-1:0] pc;  // Program Counter
+  reg   [    `DATA_WIDTH-1:0] ir;  // Instruction Register (IR)
+  reg   [    `DATA_WIDTH-1:0] dm;  // Data Register (DM)
+  reg   [    `DATA_WIDTH-1:0] a_register;  // A Register (ALU Operand)
+  reg   [    `DATA_WIDTH-1:0] b_register;  // B Register (ALU Operand)
+  reg   [    `DATA_WIDTH-1:0] d_register;  // D Register (ALU Result)
 
-  reg [`DATA_WIDTH-1 : 0] a_register;  // A Register (ALU Operand)
-  reg [`DATA_WIDTH-1 : 0] b_register;  // B Register (ALU Operand)
+  // Internal signals
+  logic [    `DATA_WIDTH-1:0] pc_write_wire;  // PC Write Wire
+  logic [    `DATA_WIDTH-1:0] rs1_data;  // Register RS1 Data
+  logic [    `DATA_WIDTH-1:0] rs2_data;  // Register RS2 Data
+  logic [    `DATA_WIDTH-1:0] d_register_write_wire;  // D Register Write Wire
+  logic [`MEM_ADDR_WIDTH-1:0] memory_address;  // Memory Address
+  logic [    `DATA_WIDTH-1:0] memory_output;  // Memory Output
+  logic [    `DATA_WIDTH-1:0] registerfile_input;  // Register File Input
+  logic [`REG_ADDR_WIDTH-1:0] registerfile_write_address;  // Register File Write Address
 
-  reg [`DATA_WIDTH-1 : 0] d_register;  // D Register (ALU Result)
+  logic [    `DATA_WIDTH-1:0] alu_operand_a;  // ALU Operand A
+  logic [    `DATA_WIDTH-1:0] alu_operand_b;  // ALU Operand B
+  logic [    `DATA_WIDTH-1:0] alu_output;  // ALU Output
+  logic                       pc_write_enable;  // PC Write Enable Signal
 
-  // internal signals for dataflow in the processor 
-  logic [`DATA_WIDTH-1 : 0] pc_write_wire;  // PC Write Wire
-  logic [`DATA_WIDTH-1 : 0] rs1_data;  // PC Write Wire
-  logic [`DATA_WIDTH-1 : 0] rs2_data;  // PC Write Wire
-  logic [`DATA_WIDTH-1 : 0] d_register_write_wire;  // PC Write Wire
-
-  logic [`MEM_ADDR_WIDTH-1 : 0] memory_address;  // Memory Address Input Wire
-  logic [`DATA_WIDTH-1 : 0] memory_output;  // Memory Output Signal
-  logic [`DATA_WIDTH-1 : 0] registerfile_input;  // Register Input Signal
-  logic [`REG_ADDR_WIDTH-1 : 0] registerfile_write_address;  // ADDED FIX 
-
-
-  logic [`DATA_WIDTH-1 : 0] alu_operand_a;  // ALU Operand A
-  logic [`DATA_WIDTH-1 : 0] alu_operand_b;  // ALU Operand B
-  logic [`DATA_WIDTH-1 : 0] alu_output;  // ALU Output
-
-  logic pc_write_enable;  // Internal PC write signal
-
-
-  initial begin
-    // Registers for internal datapath operations
-    pc = {`MEM_ADDR_WIDTH{1'b0}};
-    ir = {`DATA_WIDTH{1'b0}};
-    dm = {`DATA_WIDTH{1'b0}};
-
-    a_register = {`DATA_WIDTH{1'b0}};
-    b_register = {`DATA_WIDTH{1'b0}};
-    d_register = {`DATA_WIDTH{1'b0}};
-
-    // Output signal initialization
-    codop = {`OPCODE_WIDTH{1'b0}};
-  end
-
-  // PC Connection Description:
-  // The PC write signal is controlled by `pcCtrl` or by the ALU output (if ALU result is non-zero).
-  assign pc_write_enable = (pcCtrl | alu_output == `DATA_WIDTH'd1);
-  always_ff @(posedge clk) begin
-    if (pc_write_enable) begin
-      pc <= pc_write_wire;  // Update the PC with the value from the mux
+  // Reset block
+  always_ff @(posedge clk or posedge reset) begin
+    if (reset) begin
+      pc <= {`MEM_ADDR_WIDTH{1'b0}};
+      ir <= {`DATA_WIDTH{1'b0}};
+      dm <= {`DATA_WIDTH{1'b0}};
+      a_register <= {`DATA_WIDTH{1'b0}};
+      b_register <= {`DATA_WIDTH{1'b0}};
+      d_register <= {`DATA_WIDTH{1'b0}};
+      codop <= {`OPCODE_WIDTH{1'b0}};
+    end else begin
+      // Normal operation logic
+      if (pc_write_enable) pc <= pc_write_wire;
+      ir <= memory_output;
+      codop <= ir[`OPCODE_WIDTH-1:0];
+      dm <= memory_output;
+      a_register <= rs1_data;
+      b_register <= rs2_data;
+      d_register <= d_register_write_wire;
     end
   end
 
-  // Memory Connection Description:
-  // The memory address is selected from either the PC or the Data Register based on the `memAdrSel` signal.
-  assign memory_address = memAdrSel ? d_register : pc;
+  // PC Connection
+  assign pc_write_enable = (pcCtrl | alu_output == `DATA_WIDTH'd1);
 
-  // Memory module instantiation with descriptive port names
+  // Memory Address Selection
+  assign memory_address  = memAdrSel ? d_register : pc;
+
+  // Memory Instance
   memory #(
-    .DATA_WIDTH(`DATA_WIDTH),  // Define the data width for memory
-    .ADDR_WIDTH(`DMEM_ADDR_WIDTH)  // Define the address width for memory
+    .DATA_WIDTH(`DATA_WIDTH),
+    .ADDR_WIDTH(`DMEM_ADDR_WIDTH)
   ) memory_instance (
-    .write_data_input(b_register),  // Data to be written to memory (from Register B)
-    .memory_address(memory_address),   // Memory address input (from PC multiplexer or other control logic)
-    .memory_write_enable(memWrCtl),  // Write enable signal for memory operation (control signal)
-    .clk(clk),  // System clock driving the memory operations
-    .memory_read_data(memory_output)  // Data read from memory, connected to `memory_output`
+    .write_data_input(b_register),
+    .memory_address(memory_address),
+    .memory_write_enable(memWrCtl),
+    .clk(clk),
+    .memory_read_data(memory_output)
   );
 
-  always_ff @(posedge clk) begin : update_ir
-    ir <= memory_output;
-  end
-
-  always_ff @(posedge clk) begin : update_codop
-    codop <= ir[`OPCODE_WIDTH-1:0];
-  end
-
-  always_ff @(posedge clk) begin : update_dm
-    dm <= memory_output;
-  end
-
-  // Register file module instantiation with descriptive port names
+  // Register File Input Selection
   assign registerfile_input = regDataSel ? d_register : dm;
 
+  // Register Write Selection
   mux3x1 #(
     .DATA_WIDTH(`REG_ADDR_WIDTH)
   ) registerWriteSelection (
@@ -121,6 +105,7 @@ module datapath (
     .result(registerfile_write_address)
   );
 
+  // Register File Instance
   registerFile registerFileInstance (
     .clk(clk),
     .reset(reset),
@@ -133,12 +118,10 @@ module datapath (
     .write_data(registerfile_input)
   );
 
-  always_ff @(posedge clk) begin : connection_registre_a
-    a_register <= rs1_data;
-    b_register <= rs2_data;
-  end
-
+  // ALU Operand A Selection
   assign alu_operand_a = aluASel ? a_register : pc;
+
+  // ALU Operand B Selection
   mux3x1 #(
     .DATA_WIDTH(`DATA_WIDTH)
   ) aluBOperandselection (
@@ -149,6 +132,7 @@ module datapath (
     .result(alu_operand_b)
   );
 
+  // ALU Instance
   ALU #(
     .DATA_WIDTH(`DATA_WIDTH)
   ) aluInstance (
@@ -158,11 +142,8 @@ module datapath (
     .result(d_register_write_wire)
   );
 
-  always_ff @(posedge clk) begin : connection_registre_d
-    d_register <= d_register_write_wire;
-  end
-
-  logic [`DATA_WIDTH -1 : 0] CPortpcSelection;
+  // PC Selection Logic
+  logic [`DATA_WIDTH-1:0] CPortpcSelection;
   assign CPortpcSelection = {alu_operand_a[31:28], (ir[31:6] << 2)};
   mux3x1 #(
     .DATA_WIDTH(`DATA_WIDTH)
@@ -173,7 +154,5 @@ module datapath (
     .sel(pcWrSel),
     .result(pc_write_wire)
   );
-
-
 
 endmodule
