@@ -9,6 +9,7 @@
 
 module datapath (
   input logic clk,
+  input logic reset,
 
   input logic [1:0] pcWrSel,
   input logic pcCtrl,
@@ -28,7 +29,7 @@ module datapath (
 );
 
   // Registers for internal datapath operations
-  reg [`MEM_ADDR_WIDTH-1:0] pc = {`MEM_ADDR_WIDTH{1'b0}};  // Explicitly initialize with all zeros
+  reg [`MEM_ADDR_WIDTH-1:0] pc;  // Explicitly initialize with all zeros
   reg [`DATA_WIDTH-1 : 0] ir;  // Instruction Register (IR)
   reg [`DATA_WIDTH-1 : 0] dm;  // Data Register (DM)
 
@@ -54,6 +55,21 @@ module datapath (
   logic [`DATA_WIDTH-1 : 0] alu_output;  // ALU Output
 
   logic pc_write_enable;  // Internal PC write signal
+
+
+  initial begin
+    // Registers for internal datapath operations
+    pc = {`MEM_ADDR_WIDTH{1'b0}};
+    ir = {`DATA_WIDTH{1'b0}};
+    dm = {`DATA_WIDTH{1'b0}};
+
+    a_register = {`DATA_WIDTH{1'b0}};
+    b_register = {`DATA_WIDTH{1'b0}};
+    d_register = {`DATA_WIDTH{1'b0}};
+
+    // Output signal initialization
+    codop = {`OPCODE_WIDTH{1'b0}};
+  end
 
   // PC Connection Description:
   // The PC write signal is controlled by `pcCtrl` or by the ALU output (if ALU result is non-zero).
@@ -107,6 +123,7 @@ module datapath (
 
   registerFile registerFileInstance (
     .clk(clk),
+    .reset(reset),
     .writeEnable(regWCtl),
     .addr_rs1(ir[31:27]),
     .addr_rs2(ir[26:22]),

@@ -8,7 +8,7 @@ module core (
   logic [1:0] pcWrSel;
   logic pcCtrl;
   logic memAdrSel, memWrCtl;
-  logic [`ALU_SEL_SIZE-1:0] aluOp; 
+  logic [`ALU_SEL_SIZE-1:0] aluOp;
   logic aluASel;
   logic [1:0] aluBSel;
   logic regWCtl, regDataSel;
@@ -33,6 +33,7 @@ module core (
 
   datapath data_path (
     .clk(clk),
+    .reset(reset),
     .pcWrSel(pcWrSel),
     .pcCtrl(pcCtrl),
     .memAdrSel(memAdrSel),

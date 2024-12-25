@@ -1,0 +1,3 @@
+# ignore icarus verilog output and simulation
+/Scripts/*.vcd
+/Scripts/*.vvp
