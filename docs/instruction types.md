@@ -151,3 +151,17 @@ Each RV32I instruction is 32 bits wide. The layout depends on the instruction ty
 | EBREAK           | 1110011             | 0x73            | 000        | 0000001    |
 
 
+# RISC-V RV32I Instruction Type Identification Table
+
+| **Instruction Type** | **Opcode (Binary)** | **Opcode (Hexadecimal)** | **Instruction Examples**      |
+|-----------------------|---------------------|---------------------------|--------------------------------|
+| **R-Type**           | `0110011`          | `0x33`                    | ADD, SUB, AND, OR, etc.       |
+| **I-Type**           | `0000011`          | `0x03`                    | LB, LH, LW (Load instructions)|
+| **I-Type**           | `0010011`          | `0x13`                    | ADDI, ANDI, ORI, etc.         |
+| **I-Type**           | `1100111`          | `0x67`                    | JALR                          |
+| **S-Type**           | `0100011`          | `0x23`                    | SB, SH, SW (Store instructions)|
+| **B-Type**           | `1100011`          | `0x63`                    | BEQ, BNE, BLT, BGE, etc.      |
+| **U-Type**           | `0110111`          | `0x37`                    | LUI                           |
+| **U-Type**           | `0010111`          | `0x17`                    | AUIPC                         |
+| **J-Type**           | `1101111`          | `0x6F`                    | JAL                           |
+| **System-Type**      | `1110011`          | `0x73`                    | ECALL, EBREAK                 |
