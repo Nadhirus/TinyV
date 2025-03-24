@@ -2,22 +2,22 @@
 `include "types.sv"
 
 module registerFile (
-  input logic clk,
-  input logic reset,
-  input logic writeEnable,
+    input wire clk,
+    input wire reset,
+    input wire writeEnable,
 
-  input logic [`REG_ADDR_WIDTH - 1:0] addr_rs1,
-  output logic [`DATA_WIDTH - 1:0] rs1_data,
+    input wire [`REG_ADDR_WIDTH - 1:0] addr_rs1,
+    output reg [`DATA_WIDTH - 1:0] rs1_data,
 
-  input logic [`REG_ADDR_WIDTH - 1:0] addr_rs2,
-  output logic [`DATA_WIDTH - 1:0] rs2_data,
+    input wire [`REG_ADDR_WIDTH - 1:0] addr_rs2,
+    output reg [`DATA_WIDTH - 1:0] rs2_data,
 
-  input logic [`REG_ADDR_WIDTH - 1:0] addr_write,
-  input logic [`DATA_WIDTH - 1:0] write_data
+    input wire [`REG_ADDR_WIDTH - 1:0] addr_write,
+    input wire [`DATA_WIDTH - 1:0] write_data
 );
 
   // Register file array: 32 registers, each 32 bits wide
-  logic [`DATA_WIDTH - 1:0] registerArray[31:0];
+  logic [`DATA_WIDTH - 1:0] registerArray[0:31];
 
   always @(posedge clk or posedge reset) begin
     if (reset) begin

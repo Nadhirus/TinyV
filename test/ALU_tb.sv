@@ -1,7 +1,7 @@
 `default_nettype none
-`include "types.sv"
+`include "../src/core/types.sv"
 
-module tb_ALU;
+module ALU_tb;
     // Declare inputs and outputs
     reg [31:0] a, b;
     reg [3:0] alu_sel;
