@@ -1,42 +1,27 @@
-// ALU operation types
-`define ALU_SEL_SIZE 4
-`define ALU_AND 4'b0000    // Logical AND
-`define ALU_OR 4'b0001    // Logical OR
-`define ALU_XOR 4'b0010    // Logical XOR
-`define ALU_SLT 4'b0011    // Set Less Than (signed)
-`define ALU_SLTU 4'b0100    // Set Less Than (unsigned)
-`define ALU_ADD 4'b0101    // Addition
-`define ALU_SUB 4'b0110    // Subtraction
-`define ALU_SRL 4'b0111    // Logical Shift Right
-`define ALU_SLL 4'b1000    // Logical Shift Left
-`define ALU_SRA 4'b1001    // Arithmetic Shift Right
-`define ALU_CMP 4'b1010    // compare operation for branching 
-`define ALU_NOP 4'b1011    // No Operation
-`define ALU_INVALID 4'b1111    // Invalid operation
+// Opcode definitions for instruction decoding
+`define LUI      7'b0110111  // Load Upper Immediate
+`define AUIPC    7'b0010111  // Add Upper Immediate to PC
+`define JAL      7'b1101111  // Jump and Link
+`define JALR     7'b1100111  // Jump and Link Register
+`define BRANCH   7'b1100011  // Branch instructions (BEQ, BNE, BLT, BGE, BLTU, BGEU)
+`define LOAD     7'b0000011  // Load instructions (LB, LH, LW, LBU, LHU)
+`define STORE    7'b0100011  // Store instructions (SB, SH, SW)
+`define ALUI     7'b0010011  // Immediate ALU operations (ADDI, SLTI, SLTIU, XORI, ORI, ANDI, SLLI, SRLI, SRAI)
+`define ALU      7'b0110011  // Register-register ALU operations (ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND)
+`define FENCE    7'b0001111  // Fence instructions
+`define SYSTEM   7'b1110011  // System instructions (ECALL, EBREAK, etc.)
 
-// Control FSM states
-`define FETCH 4'b0000  // Fetch instruction
-`define DECODE 4'b0001  // Decode instruction
-`define JMP 4'b0010  // Jump
-`define JMPI 4'b0011  // Jump indirect
-`define ADD_EX 4'b0100  // Execute addition
-`define ADD_RR 4'b0101  // Register write-back for addition
-`define ADI_EX 4'b0110  // Execute addition immediate
-`define ADI_RR 4'b0111  // Register write-back for addition immediate
-`define BR 4'b1000  // Branch
-`define LD_ST 4'b1001  // Load/store decision
-`define LD_MEM 4'b1010  // Memory read for load
-`define LD_RR 4'b1011  // Register write-back for load
-`define ST_MEM 4'b1100  // Memory write for store
+// func3 of ALU operation types 
+`define func3_ADD 3'b000    // Addition
+`define func3_SLT 3'b010    // Set Less Than (signed)
+`define func3_SLTU 3'b011    // Set Less Than (unsigned)
+`define func3_XOR 3'b100    // Logical XOR
+`define func3_OR 3'b110    // Logical OR
+`define func3_AND 3'b111    // Logical AND
+`define func3_SLL 3'b001    // Logical Shift Left
+`define func3_SR 3'b101    // Shift Right
 
-// Opcodes for the FSM states
-`define OP_JMP 7'b1101111  // JAL (Jump and Link)
-`define OP_JMPI 7'b1100111  // JALR (Jump and Link Register)
-`define OP_LD 7'b0000011  // Load (LB, LH, LW)
-`define OP_ST 7'b0100011  // Store (SB, SH, SW)
-`define OP_ALU 7'b0110011  // R-type ALU operations (ADD, SUB, etc.)
-`define OP_ALUI 7'b0010011  // I-type ALU operations (ADDI, ANDI, ORI, etc.)
-`define OP_BR 7'b1100011  // Branch instructions (BEQ, BNE, BLT, etc.)
+
 
 // Other reusable constants to configure various aspects of the processor
 `define DATA_WIDTH 32
